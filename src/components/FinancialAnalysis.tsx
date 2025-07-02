@@ -3,6 +3,8 @@ import { TrendingUp, DollarSign, PieChart, Target } from 'lucide-react';
 import { MetricCard } from '@/components/MetricCard';
 import { ChartContainer } from '@/components/ChartContainer';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
+import { useCompanyData } from '@/hooks/useCompanyData';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const financialData = [
   { quarter: 'Q1 2023', revenue: 120, profit: 25, expenses: 95 },
@@ -54,10 +56,74 @@ const metrics = [
 ];
 
 export function FinancialAnalysis() {
+  const { selectedCompany, financialMetrics, loading } = useCompanyData();
+
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-slide-up">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Financial Analysis</h1>
+          <p className="text-muted-foreground">Deep dive into revenue, profitability, and financial health</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedCompany || !financialMetrics) {
+    return (
+      <div className="space-y-6 animate-slide-up">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Financial Analysis</h1>
+          <p className="text-muted-foreground">No financial data available for selected company</p>
+        </div>
+      </div>
+    );
+  }
+
+  const metrics = [
+    {
+      title: 'Total Revenue',
+      value: `$${(financialMetrics.revenue / 1e9).toFixed(1)}B`,
+      change: '+18.4%',
+      trend: 'up' as const,
+      icon: DollarSign,
+      description: 'quarterly revenue'
+    },
+    {
+      title: 'Net Income',
+      value: `$${(financialMetrics.net_income / 1e9).toFixed(1)}B`,
+      change: '+22.1%',
+      trend: 'up' as const,
+      icon: TrendingUp,
+      description: 'quarterly profit'
+    },
+    {
+      title: 'Gross Profit',
+      value: `$${(financialMetrics.gross_profit / 1e9).toFixed(1)}B`,
+      change: '+15.8%',
+      trend: 'up' as const,
+      icon: Target,
+      description: 'gross margin'
+    },
+    {
+      title: 'ROE',
+      value: `${(financialMetrics.roe * 100).toFixed(1)}%`,
+      change: '+3.2%',
+      trend: 'up' as const,
+      icon: PieChart,
+      description: 'return on equity'
+    }
+  ];
+
   return (
     <div className="space-y-6 animate-slide-up">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Financial Analysis</h1>
+        <h1 className="text-3xl font-bold mb-2">{selectedCompany.name} Financial Analysis</h1>
         <p className="text-muted-foreground">Deep dive into revenue, profitability, and financial health</p>
       </div>
 

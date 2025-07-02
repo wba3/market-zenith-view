@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { MetricCard } from '@/components/MetricCard';
 import { ChartContainer } from '@/components/ChartContainer';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { useCompanyData } from '@/hooks/useCompanyData';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const revenueData = [
   { month: 'Jan', revenue: 45000, growth: 12 },
@@ -50,10 +52,74 @@ const metrics = [
 ];
 
 export function CompanyOverview() {
+  const { selectedCompany, stockData, financialMetrics, loading } = useCompanyData();
+
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-slide-up">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Company Overview</h1>
+          <p className="text-muted-foreground">Monitor key performance indicators and market position</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedCompany || !stockData || !financialMetrics) {
+    return (
+      <div className="space-y-6 animate-slide-up">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Company Overview</h1>
+          <p className="text-muted-foreground">No data available for selected company</p>
+        </div>
+      </div>
+    );
+  }
+
+  const metrics = [
+    {
+      title: 'Market Valuation',
+      value: `$${(selectedCompany.market_cap / 1e12).toFixed(1)}T`,
+      change: `${stockData.change_percent > 0 ? '+' : ''}${stockData.change_percent?.toFixed(1)}%`,
+      trend: stockData.change_percent > 0 ? 'up' as const : 'down' as const,
+      icon: DollarSign,
+      description: 'current market cap'
+    },
+    {
+      title: 'Employee Count',
+      value: selectedCompany.employees?.toLocaleString() || 'N/A',
+      change: '+8.2%',
+      trend: 'up' as const,
+      icon: Users,
+      description: 'growth this year'
+    },
+    {
+      title: 'Stock Price',
+      value: `$${stockData.price?.toFixed(2)}`,
+      change: `${stockData.change_amount > 0 ? '+' : ''}$${stockData.change_amount?.toFixed(2)}`,
+      trend: stockData.change_amount > 0 ? 'up' as const : 'down' as const,
+      icon: BarChart3,
+      description: 'current price'
+    },
+    {
+      title: 'P/E Ratio',
+      value: financialMetrics.pe_ratio?.toFixed(1) || 'N/A',
+      change: '+5.7%',
+      trend: 'up' as const,
+      icon: Activity,
+      description: 'price to earnings'
+    }
+  ];
+
   return (
     <div className="space-y-6 animate-slide-up">
       <div>
-        <h1 className="text-3xl font-bold mb-2">Company Overview</h1>
+        <h1 className="text-3xl font-bold mb-2">{selectedCompany.name} Overview</h1>
         <p className="text-muted-foreground">Monitor key performance indicators and market position</p>
       </div>
 
