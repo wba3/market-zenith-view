@@ -2,7 +2,7 @@
 import { TrendingUp, DollarSign, PieChart, Target } from 'lucide-react';
 import { MetricCard } from '@/components/MetricCard';
 import { ChartContainer } from '@/components/ChartContainer';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
 
 const financialData = [
   { quarter: 'Q1 2023', revenue: 120, profit: 25, expenses: 95 },
@@ -119,7 +119,7 @@ export function FinancialAnalysis() {
                   backdropFilter: 'blur(16px)'
                 }}
               />
-              <RechartsPieChart.Pie
+              <Pie
                 data={expenseBreakdown}
                 cx="50%"
                 cy="50%"
@@ -131,7 +131,7 @@ export function FinancialAnalysis() {
                 {expenseBreakdown.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
-              </RechartsPieChart.Pie>
+              </Pie>
             </RechartsPieChart>
           </ResponsiveContainer>
           <div className="flex justify-center gap-4 mt-4">

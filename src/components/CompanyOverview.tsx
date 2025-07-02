@@ -19,7 +19,7 @@ const metrics = [
     title: 'Market Valuation',
     value: '$2.4B',
     change: '+12.5%',
-    trend: 'up',
+    trend: 'up' as const,
     icon: DollarSign,
     description: 'vs last quarter'
   },
@@ -27,7 +27,7 @@ const metrics = [
     title: 'Employee Count',
     value: '1,247',
     change: '+8.2%',
-    trend: 'up',
+    trend: 'up' as const,
     icon: Users,
     description: 'growth this year'
   },
@@ -35,7 +35,7 @@ const metrics = [
     title: 'Market Share',
     value: '23.8%',
     change: '-2.1%',
-    trend: 'down',
+    trend: 'down' as const,
     icon: BarChart3,
     description: 'in key segments'
   },
@@ -43,7 +43,7 @@ const metrics = [
     title: 'Activity Score',
     value: '94.2',
     change: '+5.7%',
-    trend: 'up',
+    trend: 'up' as const,
     icon: Activity,
     description: 'competitive index'
   }
